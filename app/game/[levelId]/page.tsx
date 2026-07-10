@@ -663,10 +663,13 @@ function TabPreview({
         const chipH = 16;
         const chipX = x - chipW / 2 + ((noteIndex % 2 === 0) ? -1.5 : 1.5);
         const chipY = y - chipH / 2;
-        const candidateLabel = tabNote.candidates
-          ? tabNote.candidates.map((candidate) => `S${candidate.string}F${candidate.fret}`).join(", ")
+        const candidates = (tabNote as any).candidates as
+          | Array<{ string: number; fret: number }>
+          | undefined;
+        const candidateLabel = candidates
+          ? candidates.map((candidate) => `S${candidate.string}F${candidate.fret}`).join(", ")
           : "n/a";
-        const noteTitle = `${unresolved ? "Unresolved" : `S${tabNote.string} F${tabNote.fret}`} (${midiToName(tabNote.midi)}) · reason=${tabNote.reason ?? "mapped"} · candidates=${candidateLabel}`;
+        const noteTitle = `${unresolved ? "Unresolved" : `S${tabNote.string} F${tabNote.fret}`} (${midiToName(tabNote.midi)}) · reason=${(tabNote as any).reason ?? "mapped"} · candidates=${candidateLabel}`;
 
         if (sustainWidth > 3) {
           sustains.push(
