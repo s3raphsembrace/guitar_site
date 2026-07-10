@@ -1,0 +1,30 @@
+services:
+  audio-import-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.audio-import
+    container_name: guitar_site_audio_import_backend
+    ports:
+      - "3001:3000"
+    env_file:
+      - .env.local
+    environment:
+      NODE_ENV: development
+      NEXT_TELEMETRY_DISABLED: "1"
+      CHOKIDAR_USEPOLLING: "1"
+      NEXTAUTH_URL: "http://localhost:3001"
+      MONGODB_URI: ${DOCKER_MONGODB_URI:-mongodb://host.docker.internal:27017/guitar-game}
+      TORCH_HOME: /opt/torch-cache
+      DEMUCS_MODEL: ${DEMUCS_MODEL:-htdemucs}
+      PREWARM_DEMUCS_MODEL: ${PREWARM_DEMUCS_MODEL:-1}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./:/app
+      - /app/node_modules
+      - /app/.next
+      - demucs_torch_cache:/opt/torch-cache
+    restart: unless-stopped
+
+volumes:
+  demucs_torch_cache:

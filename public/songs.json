@@ -1,0 +1,9 @@
+[
+  {
+    "id": "g_scale",
+    "title": "G Scale",
+    "audioUrl": "/audio/g_scale.ogg",
+    "chartUrl": "/charts/g_scale.json",
+    "offsetMs": 0
+  }
+]

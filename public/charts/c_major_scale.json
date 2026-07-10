@@ -1,0 +1,137 @@
+{
+  "id": "c_major_scale",
+  "title": "c_major_scale",
+  "audioUrl": "/audio/REPLACE_ME.ogg",
+  "offsetMs": 0,
+  "bpmHint": 120,
+  "events": [
+    {
+      "timeMs": 2000,
+      "durationMs": 499,
+      "notes": [
+        36
+      ],
+      "velocity": 0.6299212598425197
+    },
+    {
+      "timeMs": 2500,
+      "durationMs": 499,
+      "notes": [
+        38
+      ],
+      "velocity": 0.6299212598425197
+    },
+    {
+      "timeMs": 3000,
+      "durationMs": 499,
+      "notes": [
+        40
+      ],
+      "velocity": 0.6299212598425197
+    },
+    {
+      "timeMs": 3500,
+      "durationMs": 499,
+      "notes": [
+        41
+      ],
+      "velocity": 0.6299212598425197
+    },
+    {
+      "timeMs": 4000,
+      "durationMs": 499,
+      "notes": [
+        43
+      ],
+      "velocity": 0.6299212598425197
+    },
+    {
+      "timeMs": 4500,
+      "durationMs": 499,
+      "notes": [
+        45
+      ],
+      "velocity": 0.6299212598425197
+    },
+    {
+      "timeMs": 5000,
+      "durationMs": 499,
+      "notes": [
+        47
+      ],
+      "velocity": 0.6299212598425197
+    },
+    {
+      "timeMs": 5500,
+      "durationMs": 499,
+      "notes": [
+        48
+      ],
+      "velocity": 0.6299212598425197
+    },
+    {
+      "timeMs": 6000,
+      "durationMs": 499,
+      "notes": [
+        48
+      ],
+      "velocity": 0.6299212598425197
+    },
+    {
+      "timeMs": 6500,
+      "durationMs": 499,
+      "notes": [
+        47
+      ],
+      "velocity": 0.6299212598425197
+    },
+    {
+      "timeMs": 7000,
+      "durationMs": 499,
+      "notes": [
+        45
+      ],
+      "velocity": 0.6299212598425197
+    },
+    {
+      "timeMs": 7500,
+      "durationMs": 499,
+      "notes": [
+        43
+      ],
+      "velocity": 0.6299212598425197
+    },
+    {
+      "timeMs": 8000,
+      "durationMs": 499,
+      "notes": [
+        41
+      ],
+      "velocity": 0.6299212598425197
+    },
+    {
+      "timeMs": 8500,
+      "durationMs": 499,
+      "notes": [
+        40
+      ],
+      "velocity": 0.6299212598425197
+    },
+    {
+      "timeMs": 9000,
+      "durationMs": 499,
+      "notes": [
+        38
+      ],
+      "velocity": 0.6299212598425197
+    },
+    {
+      "timeMs": 9500,
+      "durationMs": 499,
+      "notes": [
+        36
+      ],
+      "velocity": 0.6299212598425197
+    }
+  ]
+}
