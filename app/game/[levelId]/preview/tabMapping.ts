@@ -379,7 +379,12 @@ function pickChordWithBacktracking(
 
   search(0, new Set<number>(), new Map<number, TabCandidate>(), 0, 0);
 
-  const bestAssigned = best?.assigned ?? new Map<number, TabCandidate>();
+  // `best` is only assigned inside the nested `search` closure, which makes
+  // TypeScript's flow analysis narrow it to `never` here; cast it back.
+  const finalBest = best as
+    | { assigned: Map<number, TabCandidate>; unresolved: number; score: number }
+    | null;
+  const bestAssigned = finalBest?.assigned ?? new Map<number, TabCandidate>();
 
   return notes.map((midi, noteIndex) => {
     const chosen = bestAssigned.get(noteIndex);
