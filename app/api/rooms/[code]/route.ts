@@ -65,7 +65,7 @@ export async function PUT(
             updatedAt: new Date(),
           },
         },
-        { returnDocument: "after" }
+        { returnDocument: "after", includeResultMetadata: true }
       );
 
       if (!result.value) {
@@ -87,7 +87,7 @@ export async function PUT(
           updatedAt: new Date(),
         },
       },
-      { returnDocument: "after" }
+      { returnDocument: "after", includeResultMetadata: true }
     );
 
     if (!result.value) {

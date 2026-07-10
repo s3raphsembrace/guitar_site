@@ -69,7 +69,7 @@ export async function PATCH(
     const result = await db.collection("levels").findOneAndUpdate(
       query,
       { $set: updateData },
-      { returnDocument: "after" }
+      { returnDocument: "after", includeResultMetadata: true }
     );
 
     if (!result.value) {
@@ -112,7 +112,9 @@ export async function DELETE(
       query = { $or: [{ id }, { _id: new ObjectId(id) }] };
     }
 
-    const result = await db.collection("levels").findOneAndDelete(query);
+    const result = await db.collection("levels").findOneAndDelete(query, {
+      includeResultMetadata: true,
+    });
 
     if (!result.value) {
       return NextResponse.json(

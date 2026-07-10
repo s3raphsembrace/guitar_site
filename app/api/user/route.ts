@@ -78,7 +78,7 @@ export async function PATCH(req: Request) {
     const result = await users.findOneAndUpdate(
       { id: session.user.id },
       { $set: updateData },
-      { returnDocument: "after" }
+      { returnDocument: "after", includeResultMetadata: true }
     );
 
     if (!result.value) {
