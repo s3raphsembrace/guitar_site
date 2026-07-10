@@ -1,35 +1,40 @@
 import { MongoClient } from "mongodb";
 
-const MONGODB_URI = process.env.MONGODB_URI ?? "";
+// Lazily connect to MongoDB. Importing this module NEVER throws or opens a
+// connection — the client is only created the first time something awaits it.
+// This lets the app build and serve static pages even when MONGODB_URI is unset;
+// data-backed routes will reject (and their try/catch returns a 5xx) instead of
+// crashing the whole build.
 
-if (!MONGODB_URI) {
-  throw new Error("Please define MONGODB_URI in your .env.local file");
-}
-
-// In development, attach the cached connection to the global object
-// so it survives Next.js hot reloads without opening a new connection each time.
 declare global {
   // eslint-disable-next-line no-var
-  var _mongoClient: MongoClient | null;
-  // eslint-disable-next-line no-var
-  var _mongoClientPromise: Promise<MongoClient> | null;
+  var _mongoClientPromise: Promise<MongoClient> | null | undefined;
 }
 
-let cached = global._mongoClient;
-let cachedPromise = global._mongoClientPromise;
-
-if (!cached) {
-  cached = global._mongoClient = null;
-  cachedPromise = global._mongoClientPromise = null;
+function connect(): Promise<MongoClient> {
+  const uri = process.env.MONGODB_URI;
+  if (!uri) {
+    return Promise.reject(
+      new Error("MONGODB_URI is not configured; database features are unavailable.")
+    );
+  }
+  if (!global._mongoClientPromise) {
+    global._mongoClientPromise = new MongoClient(uri).connect();
+  }
+  return global._mongoClientPromise;
 }
 
-const clientPromise: Promise<MongoClient> = 
-  cachedPromise ||
-  (global._mongoClientPromise = MongoClient.connect(MONGODB_URI).then(
-    (client) => {
-      cached = global._mongoClient = client;
-      return client;
-    }
-  ));
+// A lazy thenable: awaiting it triggers the connection on first use.
+const clientPromise = {
+  then(onFulfilled, onRejected) {
+    return connect().then(onFulfilled, onRejected);
+  },
+  catch(onRejected) {
+    return connect().catch(onRejected);
+  },
+  finally(onFinally) {
+    return connect().finally(onFinally);
+  },
+} as Promise<MongoClient>;
 
 export default clientPromise;

@@ -2,10 +2,6 @@ import mongoose from "mongoose";
 
 const MONGODB_URI = process.env.MONGODB_URI ?? "";
 
-if (!MONGODB_URI) {
-  throw new Error("Please define MONGODB_URI in your .env.local file");
-}
-
 // In development, attach the cached connection to the global object
 // so it survives Next.js hot reloads without opening a new connection each time.
 declare global {
@@ -24,6 +20,9 @@ if (!cached) {
 }
 
 export async function connectDB(): Promise<typeof mongoose> {
+  if (!MONGODB_URI) {
+    throw new Error("MONGODB_URI is not configured; database features are unavailable.");
+  }
   if (cached) return cached;
 
   if (!cachedPromise) {

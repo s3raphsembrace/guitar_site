@@ -1,41 +1,52 @@
 import { MongoClient } from "mongodb";
 
-const uri = process.env.MONGODB_URI;
-if (!uri) throw new Error("Please add MONGODB_URI in .env.local");
+// Lazily connect to MongoDB. Importing this module NEVER throws or opens a
+// connection — the client is only created the first time something awaits it.
+// This lets the app build and serve static pages even when MONGODB_URI is unset;
+// data-backed routes will reject (and their try/catch returns a 5xx) instead of
+// crashing the whole build.
 
-console.log("🗄️ MongoDB Connection Init");
-console.log("📍 URI:", uri);
-console.log("📍 Database:", uri.split("/").pop());
-
-let client: MongoClient;
-let clientPromise: Promise<MongoClient>;
-
-if (process.env.NODE_ENV === "development") {
-  // Prevent multiple connections in dev
-  if (!(global as any)._mongoClientPromise) {
-    console.log("🔄 Creating new MongoDB connection (dev mode with caching)...");
-    client = new MongoClient(uri);
-    (global as any)._mongoClientPromise = client.connect().then(() => {
-      console.log("✅ MongoDB connected successfully!");
-      return client;
-    }).catch((error) => {
-      console.error("❌ MongoDB connection failed:", error.message);
-      throw error;
-    });
-  } else {
-    console.log("♻️ Using cached MongoDB connection");
-  }
-  clientPromise = (global as any)._mongoClientPromise;
-} else {
-  console.log("🔄 Creating MongoDB connection (production mode)...");
-  client = new MongoClient(uri);
-  clientPromise = client.connect().then(() => {
-    console.log("✅ MongoDB connected successfully!");
-    return client;
-  }).catch((error) => {
-    console.error("❌ MongoDB connection failed:", error.message);
-    throw error;
-  });
+declare global {
+  // eslint-disable-next-line no-var
+  var _libMongoClientPromise: Promise<MongoClient> | null | undefined;
 }
+
+function connect(): Promise<MongoClient> {
+  const uri = process.env.MONGODB_URI;
+  if (!uri) {
+    return Promise.reject(
+      new Error("MONGODB_URI is not configured; database features are unavailable.")
+    );
+  }
+  if (!global._libMongoClientPromise) {
+    console.log("🔄 Creating MongoDB connection...");
+    global._libMongoClientPromise = new MongoClient(uri)
+      .connect()
+      .then((client) => {
+        console.log("✅ MongoDB connected successfully!");
+        return client;
+      })
+      .catch((error) => {
+        // Reset so a later request can retry the connection.
+        global._libMongoClientPromise = null;
+        console.error("❌ MongoDB connection failed:", error.message);
+        throw error;
+      });
+  }
+  return global._libMongoClientPromise;
+}
+
+// A lazy thenable: awaiting it triggers the connection on first use.
+const clientPromise = {
+  then(onFulfilled, onRejected) {
+    return connect().then(onFulfilled, onRejected);
+  },
+  catch(onRejected) {
+    return connect().catch(onRejected);
+  },
+  finally(onFinally) {
+    return connect().finally(onFinally);
+  },
+} as Promise<MongoClient>;
 
 export default clientPromise;
