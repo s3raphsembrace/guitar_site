@@ -1,7 +1,7 @@
 "use client";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "default" | "ghost";
+  variant?: "default" | "ghost" | "outline";
   size?: "sm" | "md" | "lg";
 }
 
@@ -18,6 +18,7 @@ export function Button({
     default:
       "bg-white text-black hover:bg-zinc-100 border border-zinc-200",
     ghost: "bg-transparent text-white hover:bg-zinc-800 border border-transparent",
+    outline: "bg-transparent text-white border border-white/20 hover:bg-white/5",
   };
 
   const sizeStyles = {
