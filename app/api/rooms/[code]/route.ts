@@ -51,7 +51,7 @@ export async function PUT(
 
     // If adding a player, add to players array
     if (body.playerAction === "join" && body.playerName) {
-      const result = await db.collection("rooms").findOneAndUpdate(
+      const result = await db.collection<any>("rooms").findOneAndUpdate(
         { code },
         {
           $push: {
