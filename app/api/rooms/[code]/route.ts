@@ -4,12 +4,13 @@ import { getToken } from "next-auth/jwt";
 
 export async function GET(
   _req: Request,
-  { params }: { params: { code: string } }
+  { params }: { params: Promise<{ code: string }> }
 ) {
   try {
+    const { code } = await params;
     const client = await clientPromise;
     const db = client.db("guitar-game");
-    const room = await db.collection("rooms").findOne({ code: params.code });
+    const room = await db.collection("rooms").findOne({ code });
 
     if (!room) {
       return NextResponse.json(
@@ -30,7 +31,7 @@ export async function GET(
 
 export async function PUT(
   req: Request,
-  { params }: { params: { code: string } }
+  { params }: { params: Promise<{ code: string }> }
 ) {
   try {
     // Check authentication
@@ -42,6 +43,7 @@ export async function PUT(
       );
     }
 
+    const { code } = await params;
     const body = await req.json();
 
     const client = await clientPromise;
@@ -50,7 +52,7 @@ export async function PUT(
     // If adding a player, add to players array
     if (body.playerAction === "join" && body.playerName) {
       const result = await db.collection("rooms").findOneAndUpdate(
-        { code: params.code },
+        { code },
         {
           $push: {
             players: {
@@ -78,7 +80,7 @@ export async function PUT(
 
     // Generic update for status changes, etc.
     const result = await db.collection("rooms").findOneAndUpdate(
-      { code: params.code },
+      { code },
       {
         $set: {
           ...body,

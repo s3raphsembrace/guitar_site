@@ -5,16 +5,17 @@ import { ObjectId } from "mongodb";
 
 export async function GET(
   _req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const client = await clientPromise;
     const db = client.db("guitar-game");
 
-    let query: any = { id: params.id };
+    let query: any = { id };
     // Also try to find by MongoDB _id if the id looks like an ObjectId
-    if (ObjectId.isValid(params.id)) {
-      query = { $or: [{ id: params.id }, { _id: new ObjectId(params.id) }] };
+    if (ObjectId.isValid(id)) {
+      query = { $or: [{ id }, { _id: new ObjectId(id) }] };
     }
 
     const level = await db.collection("levels").findOne(query);
@@ -38,7 +39,7 @@ export async function GET(
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Check authentication
@@ -50,13 +51,14 @@ export async function PATCH(
       );
     }
 
+    const { id } = await params;
     const client = await clientPromise;
     const db = client.db("guitar-game");
     const body = await req.json();
 
-    let query: any = { id: params.id };
-    if (ObjectId.isValid(params.id)) {
-      query = { $or: [{ id: params.id }, { _id: new ObjectId(params.id) }] };
+    let query: any = { id };
+    if (ObjectId.isValid(id)) {
+      query = { $or: [{ id }, { _id: new ObjectId(id) }] };
     }
 
     const updateData = {
@@ -89,7 +91,7 @@ export async function PATCH(
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Check authentication
@@ -101,12 +103,13 @@ export async function DELETE(
       );
     }
 
+    const { id } = await params;
     const client = await clientPromise;
     const db = client.db("guitar-game");
 
-    let query: any = { id: params.id };
-    if (ObjectId.isValid(params.id)) {
-      query = { $or: [{ id: params.id }, { _id: new ObjectId(params.id) }] };
+    let query: any = { id };
+    if (ObjectId.isValid(id)) {
+      query = { $or: [{ id }, { _id: new ObjectId(id) }] };
     }
 
     const result = await db.collection("levels").findOneAndDelete(query);
