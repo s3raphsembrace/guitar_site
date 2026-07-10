@@ -93,7 +93,9 @@ function readStoredCalibrationFlag(): boolean {
 
 function getInitialAudioInputState(): AudioInputState {
   if (typeof navigator === "undefined") return "unsupported";
-  return navigator.mediaDevices?.enumerateDevices ? "checking" : "unsupported";
+  return typeof navigator.mediaDevices?.enumerateDevices === "function"
+    ? "checking"
+    : "unsupported";
 }
 
 export default function Home() {
