@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 import clientPromise from "@/lib/mongodb";
 import { getToken } from "next-auth/jwt";
 
@@ -17,7 +17,7 @@ export async function GET() {
   }
 }
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
     // Check authentication
     const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });

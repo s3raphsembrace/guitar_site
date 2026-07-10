@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 import clientPromise from "@/lib/mongodb";
 import { getToken } from "next-auth/jwt";
 
@@ -30,7 +30,7 @@ export async function GET(
 }
 
 export async function PUT(
-  req: Request,
+  req: NextRequest,
   { params }: { params: Promise<{ code: string }> }
 ) {
   try {
